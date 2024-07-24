@@ -24,7 +24,6 @@ export const myReports = async (req, res) => {
     try {
         const id_user = decoded.usuario_id
         const resultado = await models.mReports(id_user)
-        console.log(resultado)
 
         if (resultado.length === 0) return res.status(400).json({ message: 'No existen reportes relacionados usted' })
 
