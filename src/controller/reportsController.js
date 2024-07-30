@@ -57,3 +57,35 @@ export const newReport = async (req, res) => {
         return res.status(500).json({ message: error.message })
     }
 }
+
+export const deleteReport = async (req, res) => {
+    const {report_id} = req.body
+
+        try {
+            const token = req.headers.authorization?.split(' ')[1];
+            if (!token) {
+                return res.status(401).json({ message: 'el token no existe' });
+            }
+    
+            const decoded = jwt.verify(token, SECRET_KEY);
+            const rol = decoded.rol;
+    
+            if (rol !== 1) {
+                return res.status(403).json({ message: 'No tienes permiso para realizar esta acción' });
+            }
+    
+            const result = await models.eliminateReport(report_id);
+            
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ message: 'Reporte no encontrado' });
+            }
+    
+            res.json({ message: 'Reporte eliminado exitosamente' });
+        } catch (error) {
+            if (error.name === 'JsonWebTokenError') {
+                return res.status(401).json({ message: 'Token inválido' });
+            }
+            console.error('Error al eliminar reporte:', error);
+            return res.status(500).json({ message: 'Error interno del servidor' });
+        }
+}

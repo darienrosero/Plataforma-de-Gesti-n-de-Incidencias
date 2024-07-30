@@ -22,7 +22,6 @@ return resultado
 
 const mReports = async (valor) => {
     const [resultado] = await pool.execute(`SELECT * FROM reports WHERE user_id = ?`, [valor])
-    console.log(resultado)
     return resultado
 }
 
@@ -32,5 +31,10 @@ const createReports = async ( section, description, location, img,user_id) => {
     return newReport
 }
 
+const eliminateReport = async (id) => {
+    const [resultado] = await pool.execute('DELETE FROM reports WHERE report_id = ?', [id])
+    return resultado
+}
 
-export default {create, login, allReports, createReports, mReports}
+
+export default {create, login, allReports, createReports, mReports, eliminateReport}
